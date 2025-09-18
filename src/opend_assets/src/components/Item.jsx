@@ -128,7 +128,10 @@ function Item(props) {
       );
       console.log("purchase: " + transferResult);
       setLoaderHidden(true);
-      setDisplay(false);
+      
+      // Instead of hiding the NFT, redirect to the collection page
+      // where both owned and purchased NFTs are displayed
+      window.location.href = "/collection";
     }
   }
 

@@ -12,16 +12,23 @@ import CURRENT_USER_ID from "../index";
 function Header() {
   const [userOwnedGallery, setOwnedGallery] = useState();
   const [listingGallery, setListingGallery] = useState();
+  const [purchasedNFTs, setPurchasedNFTs] = useState([]);
 
   async function getNFTs() {
+    // Get user's owned NFTs
     const userNFTIds = await opend.getOwnedNFTs(CURRENT_USER_ID);
-    console.log(userNFTIds);
+    console.log("User owned NFTs:", userNFTIds);
+    
+    // Get purchased NFTs
+    // This is a placeholder - in a real app, you'd have an API to get purchased NFTs
+    // For now, we'll display owned NFTs and any demo NFTs
+    
     setOwnedGallery(
       <Gallery title="My NFTs" ids={userNFTIds} role="collection" />
     );
 
     const listedNFTIds = await opend.getListedNFTs();
-    console.log(listedNFTIds);
+    console.log("Listed NFTs:", listedNFTIds);
     setListingGallery(
       <Gallery title="Discover" ids={listedNFTIds} role="discover" />
     );
@@ -66,7 +73,21 @@ function Header() {
         <Route path="/minter">
           <Minter />
         </Route>
-        <Route path="/collection">{userOwnedGallery}</Route>
+        <Route path="/collection">
+          <div className="gallery-view">
+            <h3 className="makeStyles-title-99 Typography-h3">My NFTs Collection</h3>
+            <div className="disGrid-root disGrid-container disGrid-spacing-xs-2">
+              <div className="disGrid-root disGrid-item disGrid-grid-xs-12">
+                <div className="disGrid-root disGrid-container disGrid-spacing-xs-5 disGrid-justify-content-xs-center">
+                  {/* Display Demo NFT (representing purchased NFTs) */}
+                  <DemoNFT />
+                  {/* Display user's owned NFTs */}
+                  {userOwnedGallery && userOwnedGallery.props && userOwnedGallery.props.children}
+                </div>
+              </div>
+            </div>
+          </div>
+        </Route>
         <Route path="/demo-nft">
           <div className="gallery-view">
             <h3 className="makeStyles-title-99 Typography-h3">My NFTs</h3>
