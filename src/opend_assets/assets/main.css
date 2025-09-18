@@ -94,9 +94,9 @@ body {
 /* Enhanced Professional Chatbot Styles */
 .chatbot-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1000;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -174,10 +174,10 @@ body {
 
 .chat-window {
   position: absolute;
-  bottom: 90px;
+  bottom: 100px;
   right: 0;
   width: 400px;
-  height: 600px;
+  height: 550px;
   background: linear-gradient(145deg, #1e1e2e 0%, #252547 100%);
   border-radius: 20px;
   overflow: hidden;
@@ -300,6 +300,55 @@ body {
   line-height: 1.5;
   word-wrap: break-word;
   position: relative;
+}
+
+.message-paragraph {
+  margin-bottom: 12px;
+}
+
+.message-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.message-header {
+  font-weight: 600;
+  font-size: 1.05em;
+  color: #ffffff;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.message-text {
+  margin-bottom: 4px;
+  line-height: 1.6;
+}
+
+.message-list-item {
+  margin: 6px 0;
+  padding-left: 8px;
+  position: relative;
+}
+
+.message-step {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+}
+
+.message-callout {
+  margin: 8px 0;
+  padding: 10px 12px;
+  background: rgba(46, 213, 115, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid #2ed573;
+  font-weight: 500;
+}
+
+.message-spacer {
+  height: 6px;
 }
 
 .message.bot {
@@ -478,11 +527,16 @@ body {
 
 /* Responsive Design */
 @media (max-width: 480px) {
+  .chatbot-container {
+    bottom: 20px;
+    right: 15px;
+  }
+  
   .chat-window {
     width: 350px;
     height: 500px;
-    bottom: 80px;
-    right: 10px;
+    bottom: 90px;
+    right: -10px;
   }
   
   .quick-actions {
@@ -492,6 +546,11 @@ body {
   .quick-action {
     font-size: 0.75rem;
     padding: 5px 10px;
+  }
+  
+  .chat-button {
+    width: 60px;
+    height: 60px;
   }
 }
 

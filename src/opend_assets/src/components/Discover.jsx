@@ -76,32 +76,39 @@ function Discover() {
             {/* Display real listed NFTs if available */}
             {listedNFTs}
             
-            {/* Display demo NFTs for presentation */}
+            {/* Display demo NFTs for presentation with proper structure */}
             {demoNFTs.map((nft) => (
-              <div className="disGrid-root disGrid-item" key={nft.id}>
-                <div className="primary-backing" style={{minHeight: "250px", width: "200px", margin: "10px"}}>
-                  <div style={{padding: "10px"}}>
-                    <img 
-                      className="discovery-image"
-                      src={nft.img} 
-                      style={{height: "150px", width: "100%", objectFit: "cover"}}
-                    />
-                    <h2 style={{fontSize: "18px", padding: "5px 0"}}>{nft.name}</h2>
-                    <p style={{fontSize: "14px", color: "#11111D"}}>{nft.price} DANG</p>
-                    <div className="lds-ellipsis" hidden={loaderHidden}>
-                      <div></div>
-                      <div></div>
-                      <div></div>
-                      <div></div>
+              <div className="disGrid-item" key={nft.id}>
+                <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
+                  <img
+                    className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
+                    src={nft.img}
+                  />
+                  <div className="lds-ellipsis" hidden={loaderHidden}>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                  <div className="disCardContent-root">
+                    <div className="disButtonBase-root disChip-root makeStyles-price-23 disChip-outlined">
+                      <span className="disChip-label">{nft.price} DANG</span>
                     </div>
-                    <button 
-                      className="btn btn-primary"
-                      style={{width: "100%", marginTop: "10px"}}
-                      onClick={() => handleBuy(nft)}
-                      disabled={!loaderHidden}
-                    >
-                      Buy
-                    </button>
+                    <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
+                      {nft.name}
+                      <span className="purple-text"> #{nft.id.split('#')[1]}</span>
+                    </h2>
+                    <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
+                      Owner: OpenD
+                    </p>
+                    <div className="Chip-root makeStyles-chipBlue-108 Chip-clickable">
+                      <span
+                        onClick={() => handleBuy(nft)}
+                        className="form-Chip-label"
+                      >
+                        Buy
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>

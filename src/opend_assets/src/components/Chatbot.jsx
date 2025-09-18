@@ -17,6 +17,72 @@ function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Helper function to format messages properly
+  const formatMessage = (text) => {
+    // Split by double newlines for paragraphs
+    const paragraphs = text.split('\n\n');
+    
+    return paragraphs.map((paragraph, pIndex) => (
+      <div key={pIndex} className="message-paragraph">
+        {paragraph.split('\n').map((line, lIndex) => {
+          // Handle different formatting
+          if (line.startsWith('**') && line.endsWith('**')) {
+            // Bold headers - remove asterisks and make bold
+            return (
+              <div key={lIndex} className="message-header">
+                {line.replace(/\*\*/g, '')}
+              </div>
+            );
+          } else if (line.includes('**')) {
+            // Inline bold text - convert **text** to bold
+            const formattedLine = line.split('**').map((part, index) => {
+              if (index % 2 === 1) {
+                return <strong key={index}>{part}</strong>;
+              }
+              return part;
+            });
+            return (
+              <div key={lIndex} className="message-text">
+                {formattedLine}
+              </div>
+            );
+          } else if (line.startsWith('•') || line.startsWith('-')) {
+            // List items
+            return (
+              <div key={lIndex} className="message-list-item">
+                {line}
+              </div>
+            );
+          } else if (line.match(/^\d+️⃣/)) {
+            // Numbered steps
+            return (
+              <div key={lIndex} className="message-step">
+                {line}
+              </div>
+            );
+          } else if (line.startsWith('🎯') || line.startsWith('✅') || line.startsWith('💡')) {
+            // Special callouts
+            return (
+              <div key={lIndex} className="message-callout">
+                {line}
+              </div>
+            );
+          } else if (line.trim() === '') {
+            // Empty lines for spacing
+            return <div key={lIndex} className="message-spacer"></div>;
+          } else {
+            // Regular text
+            return (
+              <div key={lIndex} className="message-text">
+                {line}
+              </div>
+            );
+          }
+        })}
+      </div>
+    ));
+  };
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -205,12 +271,7 @@ Please provide a helpful, professional response that addresses their specific qu
             {messages.map((message, index) => (
               <div key={index} className={`message ${message.sender}`}>
                 <div className="message-content">
-                  {message.text.split('\n').map((line, i) => (
-                    <div key={i}>
-                      {line}
-                      {i < message.text.split('\n').length - 1 && <br />}
-                    </div>
-                  ))}
+                  {formatMessage(message.text)}
                 </div>
                 <div className="message-time">
                   {new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
