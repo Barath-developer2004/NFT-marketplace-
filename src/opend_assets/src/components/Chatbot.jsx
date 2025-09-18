@@ -5,11 +5,12 @@ function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { 
-      text: "Hello! Welcome to OpenD NFT Marketplace. How can I help you today?", 
+      text: "Hello! Welcome to OpenD NFT Marketplace. I'm powered by DeepSeek AI. How can I help you today?", 
       sender: "bot" 
     }
   ]);
   const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
@@ -19,24 +20,72 @@ function Chatbot() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (input.trim() === "") return;
+    if (input.trim() === "" || isLoading) return;
 
     // Add user message
-    const newMessages = [...messages, { text: input, sender: "user" }];
+    const userMessage = { text: input, sender: "user" };
+    const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput("");
+    setIsLoading(true);
 
-    // Process user query and generate response
-    setTimeout(() => {
-      const botResponse = generateResponse(input.trim().toLowerCase());
-      setMessages([...newMessages, { text: botResponse, sender: "bot" }]);
-    }, 600);
+    try {
+      // Create context about OpenD NFT marketplace for better responses
+      const contextPrompt = `You are an AI assistant for OpenD, an NFT marketplace built on the Internet Computer blockchain. 
+      
+Key features of OpenD:
+- Users can mint/create new NFTs
+- Users can buy and sell NFTs
+- Uses DANG tokens for transactions
+- Built on Internet Computer with Motoko backend
+- React frontend with wallet integration
+- NFTs are stored as canisters on the blockchain
+
+Please provide helpful, accurate information about NFTs, blockchain, and specifically about using the OpenD marketplace. Keep responses concise and user-friendly.
+
+User question: ${input}`;
+
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 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'
+        },
+        body: JSON.stringify({
+          model: "deepseek/deepseek-r1:free",
+          messages: [
+            {
+              role: "user",
+              content: contextPrompt
+            }
+          ],
+          max_tokens: 300,
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const aiResponse = data.choices[0]?.message?.content || "I'm sorry, I couldn't process that request. Please try again.";
+      
+      setMessages([...newMessages, { text: aiResponse, sender: "bot" }]);
+    } catch (error) {
+      console.error('Error calling DeepSeek API:', error);
+      // Fallback to local responses if API fails
+      const fallbackResponse = generateFallbackResponse(input.trim().toLowerCase());
+      setMessages([...newMessages, { text: fallbackResponse, sender: "bot" }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const generateResponse = (query) => {
-    // Simple response logic based on keywords
+  const generateFallbackResponse = (query) => {
+    // Fallback response logic when API is unavailable
     if (query.includes("nft") && (query.includes("what") || query.includes("explain"))) {
       return "NFT stands for Non-Fungible Token. Unlike cryptocurrencies where each token is identical, NFTs are unique digital assets that represent ownership of a specific item, like digital art, music, or collectibles. Each NFT has a unique identifier stored on a blockchain, making it verifiably scarce and authentic.";
     } 
@@ -61,6 +110,9 @@ function Chatbot() {
     else if (query.includes("thank")) {
       return "You're welcome! Is there anything else I can help you with?";
     }
+    else if (query.includes("api") || query.includes("error")) {
+      return "I'm currently running in offline mode. You can ask me about buying NFTs, selling NFTs, creating new NFTs, or general questions about how NFTs work on OpenD.";
+    }
     else {
       return "I'm not sure I understand. You can ask me about buying NFTs, selling NFTs, creating new NFTs, or general questions about how NFTs work.";
     }
@@ -79,7 +131,10 @@ function Chatbot() {
       {isOpen && (
         <div className="chat-window">
           <div className="chat-header">
-            <h3>OpenD Assistant</h3>
+            <div>
+              <h3>OpenD Assistant</h3>
+              <small>Powered by DeepSeek AI</small>
+            </div>
             <button className="close-button" onClick={toggleChat}>×</button>
           </div>
           <div className="chat-messages">
@@ -88,6 +143,15 @@ function Chatbot() {
                 {message.text}
               </div>
             ))}
+            {isLoading && (
+              <div className="message bot loading">
+                <div className="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            )}
           </div>
           <form className="chat-input-form" onSubmit={handleSubmit}>
             <input
