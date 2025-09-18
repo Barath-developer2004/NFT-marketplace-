@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../assets/main.css";
+// Remove incorrect import as styles are already imported in App.jsx
 
 function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
