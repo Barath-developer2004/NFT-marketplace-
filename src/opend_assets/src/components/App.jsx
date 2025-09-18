@@ -4,6 +4,7 @@ import Footer from "./Footer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Item from "./Item";
 import Minter from "./Minter";
+import Chatbot from "./Chatbot";
 // Remove Discover import from App.jsx
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       {/* <Item id={NFTID}/> */}
       {/* Remove Discover component from here */}
       <Footer />
+      <Chatbot />
     </div>
   );
 }
